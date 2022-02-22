@@ -181,9 +181,6 @@ ffi_prep_cif_machdep(ffi_cif *cif)
     {
       ffi_type *t = cif->arg_types[i];
 
-#if defined(_M_IX86)
-      if (cif->abi != FFI_STDCALL)
-#endif
       bytes = FFI_ALIGN (bytes, t->alignment);
       bytes += FFI_ALIGN (t->size, FFI_SIZEOF_ARG);
     }
@@ -356,7 +353,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	  size_t align = FFI_SIZEOF_ARG;
 
 	  /* Issue 434: For thiscall and fastcall, if the paramter passed
-	     as 64-bit integer or struct, all following integer parameters
+	     as 64-bit integer or struct, all following integer paramters
 	     will be passed on stack.  */
 	  if ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
 	      && (t == FFI_TYPE_SINT64
@@ -400,14 +397,12 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ffi_call_int (cif, fn, rvalue, avalue, NULL);
 }
 
-#ifdef FFI_GO_CLOSURES
 void
 ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	     void **avalue, void *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
-#endif
 
 /** private members **/
 
@@ -497,7 +492,7 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
 	    align = 16;
 
 	  /* Issue 434: For thiscall and fastcall, if the paramter passed
-	     as 64-bit integer or struct, all following integer parameters
+	     as 64-bit integer or struct, all following integer paramters
 	     will be passed on stack.  */
 	  if ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
 	      && (t == FFI_TYPE_SINT64
@@ -562,16 +557,13 @@ ffi_prep_closure_loc (ffi_closure* closure,
       return FFI_BAD_ABI;
     }
 
-  /* endbr32.  */
-  *(UINT32 *) tramp = 0xfb1e0ff3;
-
   /* movl or pushl immediate.  */
-  tramp[4] = op;
-  *(void **)(tramp + 5) = codeloc;
+  tramp[0] = op;
+  *(void **)(tramp + 1) = codeloc;
 
   /* jmp dest */
-  tramp[9] = 0xe9;
-  *(unsigned *)(tramp + 10) = (unsigned)dest - ((unsigned)codeloc + 14);
+  tramp[5] = 0xe9;
+  *(unsigned *)(tramp + 6) = (unsigned)dest - ((unsigned)codeloc + 10);
 
   closure->cif = cif;
   closure->fun = fun;
@@ -579,8 +571,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
   return FFI_OK;
 }
-
-#ifdef FFI_GO_CLOSURES
 
 void FFI_HIDDEN ffi_go_closure_EAX(void);
 void FFI_HIDDEN ffi_go_closure_ECX(void);
@@ -617,8 +607,6 @@ ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
 
   return FFI_OK;
 }
-
-#endif /* FFI_GO_CLOSURES */
 
 /* ------- Native raw API support -------------------------------- */
 

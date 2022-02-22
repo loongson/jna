@@ -1,10 +1,5 @@
-Status
-======
 
-[![Build Status](https://travis-ci.org/libffi/libffi.svg?branch=master)](https://travis-ci.org/libffi/libffi)
-[![Build status](https://ci.appveyor.com/api/projects/status/8lko9vagbx4w2kxq?svg=true)](https://ci.appveyor.com/project/atgreen/libffi)
-
-libffi-3.4 was released on TBD.  Check the libffi web
+libffi-3.3 was released on November 23, 2019.  Check the libffi web
 page for updates: <URL:http://sourceware.org/libffi/>.
 
 
@@ -60,9 +55,7 @@ tested:
 | ARM             | Windows          | MSVC                    |
 | AVR32           | Linux            | GCC                     |
 | Blackfin        | uClinux          | GCC                     |
-| CSKY            | Linux            | GCC                     |
 | HPPA            | HPUX             | GCC                     |
-| KVX             | Linux            | GCC                     |
 | IA-64           | Linux            | GCC                     |
 | M68K            | FreeMiNT         | GCC                     |
 | M68K            | Linux            | GCC                     |
@@ -103,6 +96,7 @@ tested:
 | X86             | Interix          | GCC                     |
 | X86             | kFreeBSD         | GCC                     |
 | X86             | Linux            | GCC                     |
+| X86             | Mac OSX          | GCC                     |
 | X86             | OpenBSD          | GCC                     |
 | X86             | OS/2             | GCC                     |
 | X86             | Solaris          | GCC                     |
@@ -198,13 +192,6 @@ History
 
 See the git log for details at http://github.com/libffi/libffi.
 
-    3.4 TBD
-    	Add support for Alibaba's CSKY architecture.
-        Add support for Intel Control-flow Enforcement Technology (CET).
-	Add support for ARM Pointer Authentication (PA).
-	Fix 32-bit PPC regression.
-	Fix MIPS soft-float problem.
-
     3.3 Nov-23-19
         Add RISC-V support.
         New API in support of GO closures.
@@ -214,8 +201,8 @@ See the git log for details at http://github.com/libffi/libffi.
         Add Windows on ARM64 (WOA) support.
         Add Windows 32-bit ARM support.
         Raw java (gcj) API deprecated.
-        Add pre-built PDF documentation to source distribution.
-        Many new test cases and bug fixes.
+	Add pre-built PDF documentation to source distribution.
+        Many new tests cases and bug fixes.
         
     3.2.1 Nov-12-14
         Build fix for non-iOS AArch64 targets.
@@ -437,7 +424,6 @@ developers:
     avr32               Bradley Smith
     blackfin            Alexandre Keunecke I. de Mendonca
     cris                Simon Posnjak, Hans-Peter Nilsson
-    csky		Ma Jun, Zhang Wenmeng
     frv                 Anthony Green
     ia64                Hans Boehm
     m32r                Kazuhiro Inaoka
