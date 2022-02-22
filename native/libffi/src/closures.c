@@ -45,9 +45,6 @@
 
 #include <stddef.h>
 #include <unistd.h>
-#ifdef  HAVE_SYS_MEMFD_H
-#include <sys/memfd.h>
-#endif
 
 static const size_t overhead =
   (sizeof(max_align_t) > sizeof(void *) + sizeof(size_t)) ?
@@ -126,7 +123,7 @@ ffi_closure_free (void *ptr)
 #  define FFI_MMAP_EXEC_WRIT 1
 #  define HAVE_MNTENT 1
 # endif
-# if defined(_WIN32) || defined(__OS2__)
+# if defined(X86_WIN32) || defined(X86_WIN64) || defined(_M_ARM64) || defined(__OS2__)
 /* Windows systems may have Data Execution Protection (DEP) enabled, 
    which requires the use of VirtualMalloc/VirtualFree to alloc/free
    executable memory. */
@@ -151,9 +148,6 @@ ffi_closure_free (void *ptr)
 
 #include <mach/mach.h>
 #include <pthread.h>
-#ifdef HAVE_PTRAUTH
-#include <ptrauth.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -307,9 +301,6 @@ ffi_closure_alloc (size_t size, void **code)
 
   /* Initialize the return values */
   *code = entry->trampoline;
-#ifdef HAVE_PTRAUTH
-  *code = ptrauth_sign_unauthenticated (*code, ptrauth_key_asia, 0);
-#endif
   closure->trampoline_table = table;
   closure->trampoline_table_entry = entry;
 
@@ -395,7 +386,7 @@ ffi_closure_free (void *ptr)
 #endif
 #include <string.h>
 #include <stdio.h>
-#if !defined(_WIN32)
+#if !defined(X86_WIN32) && !defined(X86_WIN64) && !defined(_M_ARM64)
 #ifdef HAVE_MNTENT
 #include <mntent.h>
 #endif /* HAVE_MNTENT */
@@ -521,11 +512,11 @@ static int dlmalloc_trim(size_t) MAYBE_UNUSED;
 static size_t dlmalloc_usable_size(void*) MAYBE_UNUSED;
 static void dlmalloc_stats(void) MAYBE_UNUSED;
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#if !(defined(X86_WIN32) || defined(X86_WIN64) || defined(_M_ARM64) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 /* Use these for mmap and munmap within dlmalloc.c.  */
 static void *dlmmap(void *, size_t, int, int, int, off_t);
 static int dlmunmap(void *, size_t);
-#endif /* !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
+#endif /* !(defined(X86_WIN32) || defined(X86_WIN64) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
 
 #define mmap dlmmap
 #define munmap dlmunmap
@@ -535,7 +526,7 @@ static int dlmunmap(void *, size_t);
 #undef mmap
 #undef munmap
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#if !(defined(X86_WIN32) || defined(X86_WIN64) || defined(_M_ARM64) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 
 /* A mutex used to synchronize access to *exec* variables in this file.  */
 static pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -546,17 +537,6 @@ static int execfd = -1;
 
 /* The amount of space already allocated from the temporary file.  */
 static size_t execsize = 0;
-
-#ifdef HAVE_MEMFD_CREATE
-/* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_memfd (const char *name)
-{
-  int fd;
-  fd = memfd_create (name, MFD_CLOEXEC);
-  return fd;
-}
-#endif
 
 /* Open a temporary file name, and immediately unlink it.  */
 static int
@@ -685,9 +665,6 @@ static struct
   const char *arg;
   int repeat;
 } open_temp_exec_file_opts[] = {
-#ifdef HAVE_MEMFD_CREATE
-  { open_temp_exec_file_memfd, "libffi", 0 },
-#endif
   { open_temp_exec_file_env, "TMPDIR", 0 },
   { open_temp_exec_file_dir, "/tmp", 0 },
   { open_temp_exec_file_dir, "/var/tmp", 0 },
@@ -931,7 +908,7 @@ segment_holding_code (mstate m, char* addr)
 }
 #endif
 
-#endif /* !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
+#endif /* !(defined(X86_WIN32) || defined(X86_WIN64) || defined(_M_ARM64) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
 
 /* Allocate a chunk of memory with the given size.  Returns a pointer
    to the writable address, and sets *CODE to the executable
@@ -944,7 +921,7 @@ ffi_closure_alloc (size_t size, void **code)
   if (!code)
     return NULL;
 
-  ptr = FFI_CLOSURE_PTR (dlmalloc (size));
+  ptr = dlmalloc (size);
 
   if (ptr)
     {
@@ -984,7 +961,7 @@ ffi_closure_free (void *ptr)
     ptr = sub_segment_exec_offset (ptr, seg);
 #endif
 
-  dlfree (FFI_RESTORE_PTR (ptr));
+  dlfree (ptr);
 }
 
 # else /* ! FFI_MMAP_EXEC_WRIT */
@@ -1000,13 +977,13 @@ ffi_closure_alloc (size_t size, void **code)
   if (!code)
     return NULL;
 
-  return *code = FFI_CLOSURE_PTR (malloc (size));
+  return *code = malloc (size);
 }
 
 void
 ffi_closure_free (void *ptr)
 {
-  free (FFI_RESTORE_PTR (ptr));
+  free (ptr);
 }
 
 void *
