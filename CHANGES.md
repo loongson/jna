@@ -2,6 +2,38 @@ NOTE: as of JNA 4.0, JNA is now dual-licensed under LGPL and AL 2.0 (see LICENSE
 
 NOTE: JNI native support is typically incompatible between minor versions, and almost always incompatible between major versions.
 
+Release 5.8.0
+=============
+
+Features
+--------
+* [#1313](https://github.com/java-native-access/jna/issues/1313): Normalize `RESOURCE_PREFIX` for darwin to `darwin-$arch` and split jnidispatch library per architecture - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1318](https://github.com/java-native-access/jna/pull/1318): Add support for linux-riscv64 - [@thentschel](https://github.com/thentschel).
+* [#1327](https://github.com/java-native-access/jna/pull/1327): Add partial support for future values of `c.s.j.p.win32.WinNT.LOGICAL_PROCESSOR_RELATIONSHIP` enum present in Windows Insider builds - [@dbwiddis](https://github.com/dbwiddis).
+
+Bug Fixes
+---------
+* [#1317](https://github.com/java-native-access/jna/pull/1317): Change the maven coordinates of the JPMS artifacts from classifier `jpms` to custom artifact ids `jna-jpms` and `jna-platform-jpms` - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1322](https://github.com/java-native-access/jna/pull/1322): Handle 0-length domain names in `c.s.j.p.win32.Advapi32Util#getAccountBySid` - [@dbwiddis](https://github.com/dbwiddis).
+* [#1326](https://github.com/java-native-access/jna/pull/1326): Ensure pointers indirected from Memory and pointing into Memory retain originating object - [@matthiasblaesing](https://github.com/matthiasblaesing).
+
+Important Changes
+-----------------
+* The maven coordinates of the experimental JPMS (java module system) artifacts
+  were moved from using the classifier `jpms` to custom artifact ids `jna-jpms`
+  and `jna-platform-jpms`, without an classifier. The reason for this is, that
+  the platform artifacts depend on the jna artifacts and need to pull in the
+  right variant. This is not possible if the classifier is used.
+
+* `RESOURCE_PREFIX` for darwin (mac OS) was changed from `darwin` to
+  `darwin-$arch` as the fat binaries on mac OS causes various problems:
+  It was reported, that binaries were rejected from the appstore because x86
+  binaries were found in the application (jnidispatch for mac OS x86) and that
+  builds needed to be special cased so that the native library can be
+  assembled. The latter is also true for JNA.<br />
+  While the prefix is changed, the old prefix is still searched as a fallback
+  location, so if only a fat binary is present, it can still be loaded.
+
 Release 5.7.0
 =============
 

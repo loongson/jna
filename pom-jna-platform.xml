@@ -54,7 +54,7 @@
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>5.5.1-SNAPSHOT</version>
+      <version>TEMPLATE</version>
     </dependency>
   </dependencies>
 
