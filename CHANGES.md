@@ -2,6 +2,27 @@ NOTE: as of JNA 4.0, JNA is now dual-licensed under LGPL and AL 2.0 (see LICENSE
 
 NOTE: JNI native support is typically incompatible between minor versions, and almost always incompatible between major versions.
 
+Release 5.9.0
+=============
+
+Features
+--------
+* [#1336](https://github.com/java-native-access/jna/pull/1336): Add `HKEY_CURRENT_USER_LOCAL_SETTINGS` to `c.s.j.p.win32.WinReg` - [@Dani-Hub](https://github.com/Dani-Hub).
+* [#1337](https://github.com/java-native-access/jna/pull/1337): Add `REG_NOTIFY_THREAD_AGNOSTIC` to `c.s.j.p.win32.WinNet` and update `REG_LEGAL_CHANGE_FILTER` - [@Dani-Hub](https://github.com/Dani-Hub).
+* [#1338](https://github.com/java-native-access/jna/pull/1338): Add `RegNotifyChangeKeyValue` to `c.s.j.p.win32.Advapi32` - [@Dani-Hub](https://github.com/Dani-Hub).
+* [#1340](https://github.com/java-native-access/jna/issues/1340): Add `CM_Get_DevNode_Registry_Property` to `c.s.j.p.win32.Cfgmgr32` and corresponding util in `c.s.j.p.win32.Cfgmgr32Util` - [@dbwiddis](https://github.com/dbwiddis).
+* [#1352](https://github.com/java-native-access/jna/pull/1352): Add `BringWindowToTop` to `c.s.j.p.win32.User32` - [@kahgoh](https://github.com/kahgoh).
+* [#1354](https://github.com/java-native-access/jna/pull/1352): Add `GetParent` to `c.s.j.p.win32.User32` - [@kahgoh](https://github.com/kahgoh).
+* [#1360](https://github.com/java-native-access/jna/issues/1360): Add `CommandLineToArgvW` to `c.s.j.p.win32.Shell32` and corresponding util in `c.s.j.p.win32.Shell32Util` - [@dbwiddis](https://github.com/dbwiddis).
+* [#1363](https://github.com/java-native-access/jna/issues/1363): Update `NUMA_NODE_RELATIONSHIP` in `c.s.j.p.win32.WinNT` to new version of the structure and improve support for future values of `c.s.j.p.win32.WinNT.LOGICAL_PROCESSOR_RELATIONSHIP` - [@dbwiddis](https://github.com/dbwiddis).
+
+Bug Fixes
+---------
+* [#1343](https://github.com/java-native-access/jna/issues/1343): `c.s.j.p.mac.CoreFoundation.CFStringRef#stringValue` buffer needs space for a null byte - [@dbwiddis](https://github.com/dbwiddis).
+* [#1351](https://github.com/java-native-access/jna/issues/1351): Define `c.s.j.p.unix.size_t.ByReference` and fix macOS sysctl `size_t *` parameters - [@dbwiddis](https://github.com/dbwiddis).
+* [#1362](https://github.com/java-native-access/jna/issues/1362): Clear security sensitive data after usage in `c.s.j.p.win32.Crypt32Util#cryptProtectData` and `#cryptUnprotectData` - [@dmytro-sheyko](https://github.com/dmytro-sheyko).
+* [#1361](https://github.com/java-native-access/jna/issues/1361): Make `c.s.j.p.win32.Crypt32Util#cryptProtectData` and `#cryptUnprotectData` properly handle 0-length array as input - [@dmytro-sheyko](https://github.com/dmytro-sheyko).
+
 Release 5.8.0
 =============
 
@@ -50,7 +71,7 @@ Features
 * [#1239](https://github.com/java-native-access/jna/pull/1239): Improve performance of allocation of `c.s.j.Memory` objects - [@joerg1985](https://github.com/joerg1985).
 * [#1246](https://github.com/java-native-access/jna/pull/1246): Improve performance of `c.s.j.Structure#read` and `c.s.j.Structure#write` - [@joerg1985](https://github.com/joerg1985).
 * [#1260](https://github.com/java-native-access/jna/pull/1260): Add mapping for X11 generic events - [@lafoletc](https://github.com/lafoletc).
-* [#1263](https://github.com/java-native-access/jna/pull/1263): Add LowLevelMouseProc - [@nordiakt](https://github.com/nordiakt)
+* [#1263](https://github.com/java-native-access/jna/pull/1263): Add LowLevelMouseProc - [@nordiakt](https://github.com/nordiakt).
 * [#1265](https://github.com/java-native-access/jna/pull/1265): Add mapping for XQueryExtension - [@lafoletc](https://github.com/lafoletc).
 * [#1299](https://github.com/java-native-access/jna/pull/1299): Add `c.s.j.p.win32.IPHlpApi#GetExtendedTcpTable`, `c.s.j.p.win32.IPHlpApi#GetExtendedUdpTable`, and supporting structures.  - [@dbwiddis](https://github.com/dbwiddis).
 

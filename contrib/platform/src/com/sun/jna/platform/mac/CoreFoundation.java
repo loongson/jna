@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Daniel Widdis
+ * Copyright (c) 2019, 2021 Daniel Widdis
  *
  * The contents of this file is dual-licensed under 2
  * alternative Open Source/Free licenses: LGPL 2.1 or later and
@@ -303,7 +303,7 @@ public interface CoreFoundation extends Library {
      * <p>
      * CFArray is “toll-free bridged” with its Cocoa Foundation counterpart,
      * {@code NSArray}. Therefore, in a method where you see an {@code NSArray *}
-     * parameter, you can pass in a {@link #CFArrayRef}.
+     * parameter, you can pass in a {@code CFArrayRef} .
      */
     class CFArrayRef extends CFTypeRef {
         public CFArrayRef() {
@@ -487,14 +487,20 @@ public interface CoreFoundation extends Library {
          *         failed.
          */
         public String stringValue() {
+            // Get number of characters (UTF-16 code pairs)
+            // Code points > 0xffff will have 2 characters per Unicode character
             CFIndex length = INSTANCE.CFStringGetLength(this);
             if (length.longValue() == 0) {
                 return "";
             }
+            // Calculate maximum possible size in UTF8 bytes
+            // This will be 3 x length
             CFIndex maxSize = INSTANCE.CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8);
             if (maxSize.intValue() == kCFNotFound) {
                 throw new StringIndexOutOfBoundsException("CFString maximum number of bytes exceeds LONG_MAX.");
             }
+            // Increment size by 1 for a null byte
+            maxSize.setValue(maxSize.longValue() + 1);
             Memory buf = new Memory(maxSize.longValue());
             if (0 != INSTANCE.CFStringGetCString(this, buf, maxSize, kCFStringEncodingUTF8)) {
                 return buf.getString(0, "UTF8");

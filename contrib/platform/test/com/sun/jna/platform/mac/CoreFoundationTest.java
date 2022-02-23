@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -62,25 +63,37 @@ public class CoreFoundationTest {
 
     @Test
     public void testCFStringRef() throws UnsupportedEncodingException {
-        String awesome = "ǝɯosǝʍɐ sı ∀Nſ"; // Unicode
-        CFStringRef cfAwesome = CFStringRef.createCFString(awesome);
-        assertEquals(awesome.length(), CF.CFStringGetLength(cfAwesome).intValue());
-        assertEquals(awesome, cfAwesome.stringValue());
-        assertEquals(CoreFoundation.STRING_TYPE_ID, cfAwesome.getTypeID());
+        // Generate strings with different UTF8 byte lengths
+        byte[] pound = { (byte) 0xc2, (byte) 0xa3 };
+        byte[] euro = { (byte) 0xe2, (byte) 0x82, (byte) 0xac };
+        byte[] smileEmoji = { (byte) 0xf0, (byte) 0x9f, (byte) 0x98, (byte) 0x83 };
+        String[] testStrings = new String[4];
+        testStrings[0] = "ascii";
+        testStrings[1] = new String(pound, StandardCharsets.UTF_8);
+        testStrings[2] = new String(euro, StandardCharsets.UTF_8);
+        testStrings[3] = new String(smileEmoji, StandardCharsets.UTF_8);
+        for (String utf8Str : testStrings) {
+            CFStringRef cfStr = CFStringRef.createCFString(utf8Str);
+            // Length matches length of char array
+            // 2 for code points > 0xffff, 1 otherwise
+            assertEquals(utf8Str.length(), CF.CFStringGetLength(cfStr).intValue());
+            assertEquals(utf8Str, cfStr.stringValue());
+            assertEquals(CoreFoundation.STRING_TYPE_ID, cfStr.getTypeID());
 
-        byte[] awesomeArr = awesome.getBytes("UTF-8");
-        Memory mem = new Memory(awesomeArr.length + 1);
-        mem.clear();
-        assertNotEquals(0,
-                CF.CFStringGetCString(cfAwesome, mem, new CFIndex(mem.size()), CoreFoundation.kCFStringEncodingUTF8));
-        byte[] awesomeBytes = mem.getByteArray(0, (int) mem.size() - 1);
-        assertArrayEquals(awesomeArr, awesomeBytes);
-        // Essentially a toString, can't rely on format but should contain the string
-        CFStringRef desc = CF.CFCopyDescription(cfAwesome);
-        assertTrue(desc.stringValue().contains(awesome));
+            byte[] utf8Arr = utf8Str.getBytes("UTF-8");
+            Memory mem = new Memory(utf8Arr.length + 1);
+            mem.clear();
+            assertNotEquals(0,
+                    CF.CFStringGetCString(cfStr, mem, new CFIndex(mem.size()), CoreFoundation.kCFStringEncodingUTF8));
+            byte[] utf8Bytes = mem.getByteArray(0, (int) mem.size() - 1);
+            assertArrayEquals(utf8Arr, utf8Bytes);
+            // Essentially a toString, can't rely on format but should contain the string
+            CFStringRef desc = CF.CFCopyDescription(cfStr);
+            assertTrue(desc.stringValue().contains(utf8Str));
 
-        desc.release();
-        cfAwesome.release();
+            desc.release();
+            cfStr.release();
+        }
 
         CFStringRef cfEmpty = CFStringRef.createCFString("");
         assertTrue(cfEmpty.stringValue().equals(""));

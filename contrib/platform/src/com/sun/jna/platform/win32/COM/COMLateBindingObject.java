@@ -397,6 +397,7 @@ public class COMLateBindingObject extends COMBindingBaseObject {
     /**
      * @deprecated Use {@link #invokeNoReply(java.lang.String, com.sun.jna.platform.win32.Variant.VARIANT)}
      */
+    @Deprecated
     protected void invokeNoReply(String methodName,
             COMLateBindingObject comObject, VARIANT arg) {
         this.oleMethod(OleAuto.DISPATCH_METHOD, null, comObject.getIDispatch(),
@@ -565,7 +566,12 @@ public class COMLateBindingObject extends COMBindingBaseObject {
      *            the value
      */
     protected void setProperty(String propertyName, String value) {
-        this.oleMethod(OleAuto.DISPATCH_PROPERTYPUT, null, propertyName, new VARIANT(value));
+        VARIANT wrappedValue = new VARIANT(value);
+        try {
+            this.oleMethod(OleAuto.DISPATCH_PROPERTYPUT, null, propertyName, wrappedValue);
+        } finally {
+            OleAuto.INSTANCE.VariantClear(wrappedValue);
+        }
     }
 
     /**

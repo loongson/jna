@@ -359,6 +359,18 @@ public interface User32 extends StdCallLibrary, WinUser, WinNT {
      */
     boolean EnumThreadWindows(int dwThreadId, WNDENUMPROC lpEnumFunc, Pointer data);
 
+
+    /**
+     * Brings the specified window to the top of the Z order. If the window is a top-level window, it is activated. If
+     * the window is a child window, the top-level parent window associated with the child window is activated.
+     *
+     * @param hWnd
+     *            A handle to the window to bring to the top of the Z order.
+     * @return If the function succeeds, the return value is nonzero. If the function fails, the return value is zero.
+     *         To get extended error information, call GetLastError.
+     */
+    boolean BringWindowToTop(HWND hWnd);
+
     /**
      * The FlashWindowEx function flashes the specified window. It does not
      * change the active state of the window.
@@ -2261,6 +2273,30 @@ public interface User32 extends StdCallLibrary, WinUser, WinNT {
      * @return The return value is the handle to the ancestor window.
      */
     HWND GetAncestor(HWND hwnd, int gaFlags);
+
+    /**
+     * Retrieves a handle to the specified window's parent or owner.
+     *
+     * To retrieve a handle to a specified ancestor, use the GetAncestor function.
+     *
+     * @param hwnd
+     *            A handle to the window whose parent window handle is to be retrieved.
+     * @return Type: HWND<br />
+     *         If the window is a child window, the return value is a handle to the
+     *         parent window. If the window is a top-level window with the WS_POPUP style,
+     *         the return value is a handle to the owner window.
+     *
+     *         If the function fails, the return value is NULL. To get extended error
+     *         information, call GetLastError.
+     *
+     *         This function typically fails for one of the following reasons:
+     *         <ul>
+     *           <li>The window is a top-level window that is unowned or does not have
+     *           the WS_POPUP style
+     *           <li>The owner window has WS_POPUP style
+     *         </ul>
+     */
+    HWND GetParent(HWND hwnd);
 
     /**
      * Retrieves the position of the mouse cursor, in screen coordinates.
