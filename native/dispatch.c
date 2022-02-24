@@ -422,12 +422,17 @@ ffi_error(JNIEnv* env, const char* op, ffi_status status) {
   char msg[MSG_SIZE];
   switch(status) {
   case FFI_BAD_ABI:
-    snprintf(msg, sizeof(msg), "%s: Invalid calling convention", op);
+    snprintf(msg, sizeof(msg), "%s: Invalid calling convention (FFI_BAD_ABI)", op);
     throwByName(env, EIllegalArgument, msg);
     return JNI_TRUE;
   case FFI_BAD_TYPEDEF:
     snprintf(msg, sizeof(msg),
-             "%s: Invalid structure definition (native typedef error)", op);
+             "%s: Invalid structure definition (native typedef error, FFI_BAD_TYPEDEF)", op);
+    throwByName(env, EIllegalArgument, msg);
+    return JNI_TRUE;
+  case FFI_BAD_ARGTYPE:
+    snprintf(msg, sizeof(msg),
+             "%s: Invalid argument type (FFI_BAD_ARGTYPE)", op);
     throwByName(env, EIllegalArgument, msg);
     return JNI_TRUE;
   default:
@@ -493,19 +498,39 @@ dispatch(JNIEnv *env, void* func, jint flags, jobjectArray args,
     }
     else if ((*env)->IsInstanceOf(env, arg, classByte)) {
       c_args[i].b = (*env)->GetByteField(env, arg, FID_Byte_value);
-      arg_types[i] = &ffi_type_sint8;
-      arg_values[i] = &c_args[i].b;
+      // Promote char to int if we prepare a varargs call
+      if(fixed_args && i >= fixed_args && sizeof(char) < sizeof(int)) {
+        arg_types[i] = &ffi_type_uint32;
+        arg_values[i] = alloca(sizeof(int));
+        *(int*)arg_values[i] = (int) c_args[i].b;
+      } else {
+        arg_types[i] = &ffi_type_sint8;
+        arg_values[i] = &c_args[i].b;
+      }
     }
     else if ((*env)->IsInstanceOf(env, arg, classShort)) {
       c_args[i].s = (*env)->GetShortField(env, arg, FID_Short_value);
-      arg_types[i] = &ffi_type_sint16;
-      arg_values[i] = &c_args[i].s;
+      // Promote short to int if we prepare a varargs call
+      if(fixed_args && i >= fixed_args && sizeof(short) < sizeof(int)) {
+        arg_types[i] = &ffi_type_uint32;
+        arg_values[i] = alloca(sizeof(int));
+        *(int*)arg_values[i] = (int) c_args[i].s;
+      } else {
+        arg_types[i] = &ffi_type_sint16;
+        arg_values[i] = &c_args[i].s;
+      }
     }
     else if ((*env)->IsInstanceOf(env, arg, classCharacter)) {
       if (sizeof(wchar_t) == 2) {
         c_args[i].c = (*env)->GetCharField(env, arg, FID_Character_value);
-        arg_types[i] = &ffi_type_uint16;
-        arg_values[i] = &c_args[i].c;
+        if(fixed_args && i >= fixed_args && sizeof(short) < sizeof(int)) {
+          arg_types[i] = &ffi_type_uint32;
+          arg_values[i] = alloca(sizeof(int));
+          *(int*)arg_values[i] = (int) c_args[i].c;    
+        } else {
+          arg_types[i] = &ffi_type_uint16;
+          arg_values[i] = &c_args[i].c;
+        }
       }
       else if (sizeof(wchar_t) == 4) {
         c_args[i].i = (*env)->GetCharField(env, arg, FID_Character_value);
@@ -3466,6 +3491,11 @@ Java_com_sun_jna_Native_registerMethod(JNIEnv *env, jclass UNUSED(ncls),
   }
 
   closure = ffi_closure_alloc(sizeof(ffi_closure), &code);
+  if (closure == NULL) {
+    throwByName(env, EUnsupportedOperation, "Failed to allocate closure");
+    status = FFI_BAD_ABI;
+    goto cleanup;
+  }
   status = ffi_prep_closure_loc(closure, closure_cif, dispatch_direct, data, code);
   if (status != FFI_OK) {
     throwByName(env, EError, "Native method linkage failed");
@@ -3514,16 +3544,31 @@ Java_com_sun_jna_Native_ffi_1prep_1closure(JNIEnv *env, jclass UNUSED(cls), jlon
   ffi_status s;
 
   if ((*env)->GetJavaVM(env, &cb->vm) != JNI_OK) {
+    free(cb);
     throwByName(env, EUnsatisfiedLink, "Can't get Java VM");
     return 0;
   }
 
   cb->object = (*env)->NewWeakGlobalRef(env, obj);
+  if (cb->object == NULL) {
+    // either obj was null or an OutOfMemoryError has been thrown
+    free(cb);
+    return 0;
+  }
   cb->closure = ffi_closure_alloc(sizeof(ffi_closure), L2A(&cb->x_closure));
+  if (cb->closure == NULL) {
+    (*env)->DeleteWeakGlobalRef(env, cb->object);
+    free(cb);
+    throwByName(env, EUnsupportedOperation, "Failed to allocate closure");
+    return 0;
+  }
 
   s = ffi_prep_closure_loc(cb->closure, L2A(cif), &closure_handler,
                            cb, cb->x_closure);
   if (ffi_error(env, "ffi_prep_cif", s)) {
+    ffi_closure_free(cb->closure);
+    (*env)->DeleteWeakGlobalRef(env, cb->object);
+    free(cb);
     return 0;
   }
   return A2L(cb);
