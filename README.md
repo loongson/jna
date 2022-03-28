@@ -7,7 +7,7 @@
 Java Native Access (JNA)
 ========================
 
-The definitive JNA reference (including an overview and usage details) is in the [JavaDoc](http://java-native-access.github.io/jna/5.10.0/javadoc/).  Please read the [overview](http://java-native-access.github.io/jna/5.10.0/javadoc/overview-summary.html#overview_description).  Questions, comments, or exploratory conversations should begin on the [mailing list](http://groups.google.com/group/jna-users), although you may find it easier to find answers to already-solved problems on [StackOverflow](http://stackoverflow.com/questions/tagged/jna).
+The definitive JNA reference (including an overview and usage details) is in the [JavaDoc](http://java-native-access.github.io/jna/5.11.0/javadoc/).  Please read the [overview](http://java-native-access.github.io/jna/5.11.0/javadoc/overview-summary.html#overview_description).  Questions, comments, or exploratory conversations should begin on the [mailing list](http://groups.google.com/group/jna-users), although you may find it easier to find answers to already-solved problems on [StackOverflow](http://stackoverflow.com/questions/tagged/jna).
 
 JNA provides Java programs easy access to native shared libraries without writing anything but Java code - no JNI or native code is required. This functionality is comparable to Windows' Platform/Invoke and Python's ctypes.
 
@@ -37,8 +37,8 @@ JNA is a mature library with dozens of contributors and hundreds of commercial a
 - [FileBot Media Renamer](http://www.filebot.net) by Reinhard Pointner.
 - [USB for Java](https://launchpad.net/libusb4j) by Mario Boikov.
 - [Waffle](https://github.com/dblock/waffle): Enables SSO on Windows in Java applications, by Daniel Doubrovkine.
-- [leveldb-jna](https://github.com/protonail/leveldb-jna): Cross-platform JNA based adapter for [LevelDB](https://github.com/google/leveldb) (used in [Keylord](http://protonail.com)).
-- [bolt-jna](https://github.com/protonail/bolt-jna): Cross-platform JNA based adapter for [Bolt](https://github.com/boltdb/bolt) (used in [Keylord](http://protonail.com)). It is show how to use JNA for binding to Go library.
+- [leveldb-jna](https://github.com/protonail/leveldb-jna): Cross-platform JNA based adapter for [LevelDB](https://github.com/google/leveldb).
+- [bolt-jna](https://github.com/protonail/bolt-jna): Cross-platform JNA based adapter for [Bolt](https://github.com/boltdb/bolt). It is to show how to use JNA for binding to Go library.
 - [JVM OpenVR Bindings](https://github.com/kotlin-graphics/openvr).
 - [Apache Ignite](https://ignite.apache.org/): Direct IO plugin
 - [Domino JNA](https://github.com/klehmann/domino-jna): Cross-platform access to HCL Notes/Domino C API methods from Java
@@ -47,6 +47,7 @@ JNA is a mature library with dozens of contributors and hundreds of commercial a
 - [jacknji11](https://github.com/joelhockey/jacknji11): Provides a Java PKCS#11 interface.
 - [JNAJack](https://github.com/jaudiolibs/jnajack): Java bindings for [JACK Audio Connection Kit](https://jackaudio.org/).
 - [Elasticsearch](https://www.elastic.co/elasticsearch/): Large-scale distributed search and analytics engine.
+- [Aki](https://github.com/letmeNo1/Aki): Automated Testing on desktop
 
 *Interesting Investigations/Experiments*
 
@@ -64,12 +65,12 @@ Pre-built platform support may be found [here](https://github.com/java-native-ac
 Download
 ========
 
-Version 5.10.0
+Version 5.11.0
 
 JNA
 ---
 
-[![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna.svg?label=Maven%20Central)](https://search.maven.org/artifact/net.java.dev.jna/jna/5.10.0/jar)&nbsp;[jna-5.10.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.10.0/jna-5.10.0.jar)&nbsp;[jna-jpms-5.10.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna-jpms/5.10.0/jna-jpms-5.10.0.jar)
+[![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna.svg?label=Maven%20Central)](https://search.maven.org/artifact/net.java.dev.jna/jna/5.11.0/jar)&nbsp;[jna-5.11.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.11.0/jna-5.11.0.jar)&nbsp;[jna-jpms-5.11.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna-jpms/5.11.0/jna-jpms-5.11.0.jar)
 
 This is the core artifact of JNA and contains only the binding library and the
 core helper classes.
@@ -77,7 +78,7 @@ core helper classes.
 JNA Platform
 ------------
 
-[![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna-platform.svg?label=Maven%20Central)](https://search.maven.org/artifact/net.java.dev.jna/jna-platform/5.10.0/jar)&nbsp;[jna-platform-5.10.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.10.0/jna-platform-5.10.0.jar)&nbsp;[jna-platform-jpms-5.10.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform-jpms/5.10.0/jna-platform-jpms-5.10.0.jar)
+[![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna-platform.svg?label=Maven%20Central)](https://search.maven.org/artifact/net.java.dev.jna/jna-platform/5.11.0/jar)&nbsp;[jna-platform-5.11.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.11.0/jna-platform-5.11.0.jar)&nbsp;[jna-platform-jpms-5.11.0.jar](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform-jpms/5.11.0/jna-platform-jpms-5.11.0.jar)
 
 This artifact holds cross-platform mappings and mappings for a number of commonly used platform
 functions, including a large number of Win32 mappings as well as a set of utility classes
@@ -145,12 +146,12 @@ Using the Library
 * [Platform Library](https://github.com/java-native-access/jna/blob/master/www/PlatformLibrary.md)
 * [Direct Method Mapping](https://github.com/java-native-access/jna/blob/master/www/DirectMapping.md) (Optimization)
 * [Frequently Asked Questions (FAQ)](https://github.com/java-native-access/jna/blob/master/www/FrequentlyAskedQuestions.md)
-* [Avoiding Crashes](http://java-native-access.github.io/jna/5.10.0/javadoc/overview-summary.html#crash-protection)
+* [Avoiding Crashes](http://java-native-access.github.io/jna/5.11.0/javadoc/overview-summary.html#crash-protection)
 
 Primary Documentation (JavaDoc)
 ===============================
 
-The definitive JNA reference is in the [JavaDoc](http://java-native-access.github.io/jna/5.10.0/javadoc/).
+The definitive JNA reference is in the [JavaDoc](http://java-native-access.github.io/jna/5.11.0/javadoc/).
 
 Developers
 ==========

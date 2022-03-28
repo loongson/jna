@@ -2,6 +2,24 @@ NOTE: as of JNA 4.0, JNA is now dual-licensed under LGPL and AL 2.0 (see LICENSE
 
 NOTE: JNI native support is typically incompatible between minor versions, and almost always incompatible between major versions.
 
+Release 5.11.0
+==============
+
+Features
+--------
+* [#1398](https://github.com/java-native-access/jna/pull/1398): Increase `c.s.j.p.win32.Sspi#MAX_TOKEN_SIZE` on Windows 8/Server 2012 and later - [@dbwiddis](https://github.com/dbwiddis).
+* [#1403](https://github.com/java-native-access/jna/pull/1403): Rebuild AIX binaries with libffi 3.4.2 (other architectures were part of 5.10) - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1404](https://github.com/java-native-access/jna/issues/1404): Added Solaris Kstat2 library - [@dbwiddis](https://github.com/dbwiddis).
+* [#1416](https://github.com/java-native-access/jna/pull/1416): Add `CFDictionaryGetCount` to `c.s.j.p.mac.CoreFoundation` - [@shalupov](https://github.com/shalupov)
+
+Bug Fixes
+---------
+* [#1411](https://github.com/java-native-access/jna/pull/1411): Do not throw `Win32Exception` on success for empty section in `Kernel32Util#getPrivateProfileSection` - [@mkarg](https://github.com/mkarg).
+* [#1414](https://github.com/java-native-access/jna/pull/1414): Fix definition of `c.s.j.p.unix.X11.XK_Shift_R` - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1323](https://github.com/java-native-access/jna/issues/1323). Fix crashes in direct callbacks on mac OS aarch64 - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1422](https://github.com/java-native-access/jna/pull/1422): Load jawt library relative to `sun.boot.library.path` system on unix OSes - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1427](https://github.com/java-native-access/jna/pull/1427): Rebuild all binaries with fix from #1422 and #1323 - [@matthiasblaesing](https://github.com/matthiasblaesing).
+
 Release 5.10.0
 ==============
 
