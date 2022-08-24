@@ -2,6 +2,28 @@ NOTE: as of JNA 4.0, JNA is now dual-licensed under LGPL and AL 2.0 (see LICENSE
 
 NOTE: JNI native support is typically incompatible between minor versions, and almost always incompatible between major versions.
 
+Release 5.12.0
+==============
+
+Features
+--------
+* [#1433](https://github.com/java-native-access/jna/pull/1433): Add `CFEqual`, `CFDictionaryRef.ByReference`, `CFStringRef.ByReference` to `c.s.j.p.mac.CoreFoundation` - [@shalupov](https://github.com/shalupov)
+* [#978](https://github.com/java-native-access/jna/issues/978): Remove use of finalizers in JNA and improve concurrency for `Memory`, `CallbackReference` and `NativeLibrary` - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1440](https://github.com/java-native-access/jna/pull/1440): Support for LoongArch64 - [@Panxuefeng-loongson](https://github.com/Panxuefeng-loongson).
+* [#1444](https://github.com/java-native-access/jna/pull/1444): Update embedded libffi to 1f14b3fa92d4442a60233e9596ddec428a985e3c and rebuild native libraries - [@matthiasblaesing](https://github.com/matthiasblaesing).
+
+Bug Fixes
+---------
+* [#1438](https://github.com/java-native-access/jna/pull/1438): Handle arrays in structures with differing size - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1442](https://github.com/java-native-access/jna/issues/1442): Handle race condition in `c.s.j.p.win32.PdhUtil#PdhEnumObjectItems` - [@dbwiddis](https://github.com/dbwiddis).
+
+Important Changes
+-----------------
+* `Memory#dispose`, `CallbackReference#dispose` and `NativeLibrary#dispose`
+   were called by the `Object#finalize` override. These calls were replaced by
+   the use of a cleaner. It is not guaranteed anymore, that `dispose` is called
+   on subclasses on finalization.
+
 Release 5.11.0
 ==============
 
@@ -11,6 +33,7 @@ Features
 * [#1403](https://github.com/java-native-access/jna/pull/1403): Rebuild AIX binaries with libffi 3.4.2 (other architectures were part of 5.10) - [@matthiasblaesing](https://github.com/matthiasblaesing).
 * [#1404](https://github.com/java-native-access/jna/issues/1404): Added Solaris Kstat2 library - [@dbwiddis](https://github.com/dbwiddis).
 * [#1416](https://github.com/java-native-access/jna/pull/1416): Add `CFDictionaryGetCount` to `c.s.j.p.mac.CoreFoundation` - [@shalupov](https://github.com/shalupov)
+* [#1418](https://github.com/java-native-access/jna/pull/1418): Add `CertOpenStore` to `c.s.j.p.win32.Crypt32` - [@shalupov](https://github.com/shalupov)
 
 Bug Fixes
 ---------
