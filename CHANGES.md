@@ -2,6 +2,28 @@ NOTE: as of JNA 4.0, JNA is now dual-licensed under LGPL and AL 2.0 (see LICENSE
 
 NOTE: JNI native support is typically incompatible between minor versions, and almost always incompatible between major versions.
 
+Release (5.13.0)
+================
+
+Features
+--------
+* [#1454](https://github.com/java-native-access/jna/pull/1454): Add `c.s.j.p.win32.Psapi.QueryWorkingSetEx` and associated Types - [@crain-32](https://github.com/Crain-32).
+* [#1459](https://github.com/java-native-access/jna/pull/1459): Add `VirtualLock` and `VirtualUnlock` in `c.s.j.p.win32.Kernel32` - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1471](https://github.com/java-native-access/jna/pull/1471): Add `c.s.j.p.win32.Advapi32Util#isCurrentProcessElevated` and associated Types - [@dbwiddis](https://github.com/dbwiddis).
+* [#1474](https://github.com/java-native-access/jna/pull/1474): Add `c.s.j.p.win32.WbemCli#IWbemClassObject.IWbemQualifierSet`, `IWbemServices.GetObject`, `IWbemContext.SetValue` and associated methods - [@rchateauneu](https://github.com/rchateauneu).
+* [#1482](https://github.com/java-native-access/jna/pull/1482): Add multilingual support of `Kernel32Util.formatMessage` - [@overpathz](https://github.com/overpathz).
+* [#1490](https://github.com/java-native-access/jna/pull/1490): Adds support for a custom `SymbolProvider` in `NativeLibrary` & `Library` - [@soywiz](https://github.com/soywiz).
+* [#1491](https://github.com/java-native-access/jna/pull/1491): Update libffi to v3.4.4  - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1487](https://github.com/java-native-access/jna/issues/1487): Add 'uses' information to OSGI metadata in MANIFEST.MF to improve stability of package resolution - [@sratz](https://github.com/sratz).
+
+Bug Fixes
+---------
+* [#1452](https://github.com/java-native-access/jna/issues/1452): Fix memory allocation/handling for error message generation in native library code (`dispatch.c`) - [@matthiasblaesing](https://github.com/matthiasblaesing).
+* [#1460](https://github.com/java-native-access/jna/issues/1460): Fix win32 variant date conversion in DST offest window and with millisecond values - [@eranl](https://github.com/eranl).
+* [#1472](https://github.com/java-native-access/jna/issues/1472): Fix incorrect bitmask in `c.s.j.Pointer#createConstant(int)` - [@dbwiddis](https://github.com/dbwiddis).
+* [#1481](https://github.com/java-native-access/jna/issues/1481): Fix NPE in NativeLibrary when unpacking from classpath is disabled - [@trespasserw](https://github.com/trespasserw).
+* [#1489](https://github.com/java-native-access/jna/pull/1489): Fixes typo in `OpenGL32Util#wglGetProcAddress`, instead of parameter `procName` the hardcoded value `wglEnumGpusNV` was used - [@soywiz](https://github.com/soywiz).
+
 Release 5.12.1
 ==============
 
